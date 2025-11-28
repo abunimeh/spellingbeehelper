@@ -32,6 +32,11 @@ In the 2nd window, run the audio player:
 pixi run audio
 ```
 
+If you want to the student to have a test with AI, run:
+```bash
+pixi run test
+```
+
 ## NOTES
 
 Note that the 1st time you launch the audio player, it will download the model from huggingface. After that run, it will be cached and run quickly.

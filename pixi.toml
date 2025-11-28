@@ -7,6 +7,7 @@ version = "0.1.0"
 [tasks]
 server = "mlx_audio.server --host 0.0.0.0 --port 9009"
 audio = "python play_mlx.py"
+test = "python spellingtest.py"
 
 [dependencies]
 python = ">=3.12.0,<3.13"
@@ -15,4 +16,7 @@ ffmpeg = ">=8.0.0,<9"
 pkg-config = "*"
 
 [pypi-dependencies]
-mlx-audio = ">=0.2.6, <0.3"
+mlx-audio = ">=0.2.6, <0.4"
+numpy = ">=1.26,<2"
+sounddevice = ">=0.4.7,<1"
+requests = ">=2.32,<3"

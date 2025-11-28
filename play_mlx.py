@@ -8,6 +8,8 @@ SERVER_URL = "http://localhost:9009/v1/audio/speech"
 MODEL = "mlx-community/Kokoro-82M-bf16"
 INPUT_FILE = "spellingwords.txt"
 DELAY = 7  # seconds
+CURL_CONNECT_TIMEOUT = "5"  # seconds
+CURL_MAX_TIME = "60"  # seconds
 
 
 def normalize(word: str) -> str:
@@ -25,12 +27,17 @@ def speak_word(word: str):
             "-X",
             "POST",
             SERVER_URL,
+            "--connect-timeout",
+            CURL_CONNECT_TIMEOUT,
+            "--max-time",
+            CURL_MAX_TIME,
             "-H",
             "Content-Type: application/json",
             "-d",
             f'{{"model":"{MODEL}","input":"{word}"}}',
         ],
         stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     )
 
     ffplay = subprocess.Popen(
@@ -43,10 +50,19 @@ def speak_word(word: str):
             "-",
         ],
         stdin=curl.stdout,
+        stderr=subprocess.PIPE,
     )
 
-    ffplay.wait()
-    curl.wait()
+    ffplay_rc = ffplay.wait()
+    curl_rc = curl.wait()
+
+    curl_err = curl.stderr.read().decode("utf-8", "replace").strip() if curl.stderr else ""
+    ffplay_err = ffplay.stderr.read().decode("utf-8", "replace").strip() if ffplay.stderr else ""
+
+    if curl_rc != 0:
+        raise RuntimeError(f"curl failed with code {curl_rc}: {curl_err or 'no error output'}")
+    if ffplay_rc != 0:
+        raise RuntimeError(f"ffplay failed with code {ffplay_rc}: {ffplay_err or 'no error output'}")
 
 
 def main():

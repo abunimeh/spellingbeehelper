@@ -1,0 +1,18 @@
+[workspace]
+channels = ["conda-forge"]
+name = "spellingbee"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+server = "mlx_audio.server --host 0.0.0.0 --port 9009"
+audio = "python play_mlx.py"
+
+[dependencies]
+python = ">=3.12.0,<3.13"
+pip = ">=25.3,<26"
+ffmpeg = ">=8.0.0,<9"
+pkg-config = "*"
+
+[pypi-dependencies]
+mlx-audio = ">=0.2.6, <0.3"
